@@ -114,15 +114,28 @@ function updateStats() {
 }
 
 function motAleatoire() {
-    const randomWords = [];
-    for (let i = 0; i < 3; i++) {
-        const randomIndex = Math.floor(Math.random() * vocabulary.length);
-        randomWords.push(vocabulary[randomIndex]);
-    }
+    // Tirer le premier mot au hasard
+    const randomIndexA = Math.floor(Math.random() * vocabulary.length);
+    const wordA = vocabulary[randomIndexA];
 
-    document.getElementById('wordA').value = randomWords[0];
-    document.getElementById('wordB').value = randomWords[1];
-    document.getElementById('wordC').value = randomWords[2];
+    // Tirer le deuxième mot au hasard (différent du premier)
+    let randomIndexB;
+    do {
+        randomIndexB = Math.floor(Math.random() * vocabulary.length);
+    } while (randomIndexB === randomIndexA);
+    const wordB = vocabulary[randomIndexB];
+
+    // Trouver les mots sémantiquement proches du premier mot
+    const vecA = embeddings[wordA];
+    const closeWords = findClosestWords(vecA, [wordA, wordB], 50); // Top 50 mots proches
+
+    // Tirer le troisième mot parmi les mots proches (du même champ sémantique)
+    const randomCloseIndex = Math.floor(Math.random() * Math.min(20, closeWords.length));
+    const wordC = closeWords[randomCloseIndex].word;
+
+    document.getElementById('wordA').value = wordA;
+    document.getElementById('wordB').value = wordB;
+    document.getElementById('wordC').value = wordC;
     document.getElementById('result').value = '';
     document.getElementById('resultSection').style.display = 'none';
 }
