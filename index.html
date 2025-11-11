@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu d'Embeddings - 1000 mots français</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 Jeu d'Embeddings Sémantiques</h1>
+        <p class="subtitle">Base de données : 1000 mots français avec embeddings vectoriels</p>
+
+        <div class="explanation">
+            <strong>🎯 Comment ça marche :</strong> Chaque mot est représenté par un vecteur de 50 dimensions.
+            L'analogie utilise l'arithmétique vectorielle : <code>vecteur(A) - vecteur(B) + vecteur(C) = vecteur(résultat)</code>
+            <br><br>
+            <strong>📊 Performance :</strong> Recherche dans <span id="wordCount">1000</span> mots français par similarité cosinus
+        </div>
+
+        <div class="game-area">
+            <div class="analogie">
+                <div style="position: relative;">
+                    <input type="text" id="wordA" placeholder="roi" autocomplete="off">
+                    <div id="suggestionsA" class="word-suggestions" style="display: none;"></div>
+                </div>
+                <span>est à</span>
+                <div style="position: relative;">
+                    <input type="text" id="wordB" placeholder="reine" autocomplete="off">
+                    <div id="suggestionsB" class="word-suggestions" style="display: none;"></div>
+                </div>
+                <span>ce que</span>
+                <div style="position: relative;">
+                    <input type="text" id="wordC" placeholder="homme" autocomplete="off">
+                    <div id="suggestionsC" class="word-suggestions" style="display: none;"></div>
+                </div>
+                <span>est à</span>
+                <input type="text" id="result" placeholder="?" readonly style="background:#e2e8f0; font-weight: bold;">
+            </div>
+
+            <div style="text-align: center;">
+                <button onclick="calculerAnalogie()">🧮 Calculer l'analogie</button>
+                <button onclick="motAleatoire()">🎲 Mots aléatoires</button>
+                <button onclick="reset()">🔄 Reset</button>
+            </div>
+
+            <div id="loading" class="loading" style="display: none;">
+                Calcul en cours...
+            </div>
+        </div>
+
+        <div id="resultSection" class="result">
+            <h3>🎯 Résultat de l'analogie :</h3>
+            <div id="resultText"></div>
+            <div id="similarityScore" class="similarity-score"></div>
+            <div id="closestWords" class="closest-words">
+                <strong>🔍 Mots les plus proches dans l'espace vectoriel :</strong>
+                <div id="wordList" class="word-list"></div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <strong>📈 Analogies testées</strong>
+                <div id="totalAnalogies" style="font-size: 1.5em; color: #667eea;">0</div>
+            </div>
+            <div class="stat-card">
+                <strong>✅ Réussites</strong>
+                <div id="successRate" style="font-size: 1.5em; color: #48bb78;">0%</div>
+            </div>
+            <div class="stat-card">
+                <strong>🏆 Score moyen</strong>
+                <div id="averageScore" style="font-size: 1.5em; color: #ed8936;">0.0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charger d'abord les données d'embeddings -->
+    <script src="data_embeddings.js"></script>
+    <!-- Puis charger la logique de l'application -->
+    <script src="app.js"></script>
+</body>
+</html>
