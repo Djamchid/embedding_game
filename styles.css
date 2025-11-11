@@ -1,0 +1,175 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #333;
+    min-height: 100vh;
+}
+
+.container {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+h1 {
+    text-align: center;
+    color: #4a5568;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #718096;
+    margin-bottom: 30px;
+    font-style: italic;
+}
+
+.game-area {
+    background: #f7fafc;
+    border-radius: 10px;
+    padding: 25px;
+    margin: 20px 0;
+}
+
+.analogie {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    font-size: 1.3em;
+    flex-wrap: wrap;
+}
+
+input[type="text"] {
+    padding: 12px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1em;
+    min-width: 120px;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: #667eea;
+    transform: scale(1.05);
+}
+
+.word-suggestions {
+    position: absolute;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.suggestion-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #f7fafc;
+}
+
+.suggestion-item:hover {
+    background: #e6fffa;
+}
+
+button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 15px 35px;
+    border-radius: 25px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: transform 0.2s;
+    margin: 10px 8px;
+    font-weight: 600;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.result {
+    background: #e6fffa;
+    border: 2px solid #4fd1c7;
+    border-radius: 12px;
+    padding: 25px;
+    margin: 20px 0;
+    text-align: center;
+    display: none;
+}
+
+.closest-words {
+    background: #fff5f5;
+    border: 1px solid #feb2b2;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 15px 0;
+}
+
+.word-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.word-badge {
+    background: #4fd1c7;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.explanation {
+    background: #f0fff4;
+    border-left: 4px solid #48bb78;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 0 8px 8px 0;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.stat-card {
+    background: #f7fafc;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+}
+
+.loading {
+    text-align: center;
+    color: #667eea;
+    font-style: italic;
+    margin: 20px 0;
+}
+
+.similarity-score {
+    background: #e6fffa;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+    font-weight: bold;
+    text-align: center;
+}
