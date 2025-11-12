@@ -153,7 +153,12 @@ function updateVisualization() {
 }
 
 // Gestion des événements de souris
+let canvasInteractionSetup = false;
+
 function setupCanvasInteraction() {
+    if (canvasInteractionSetup) return; // Éviter d'attacher plusieurs fois
+    canvasInteractionSetup = true;
+    
     const canvas = document.getElementById('visualizationCanvas');
     const tooltip = document.getElementById('tooltip');
     
