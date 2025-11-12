@@ -1,9 +1,13 @@
 // Variables globales pour les embeddings et le vocabulaire
 var embeddings = {};
 var vocabulary = [];
+var embeddingsInitialized = false;
 
 // Générer les embeddings depuis GloVe avec organisation par catégories
 function generateSemanticEmbeddings() {
+    if (embeddingsInitialized) return; // Éviter d'initialiser plusieurs fois
+    embeddingsInitialized = true;
+    
     const words = {
 
         // Pronouns and Articles
