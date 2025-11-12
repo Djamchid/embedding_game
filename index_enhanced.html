@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu d'Embeddings - Explorer les Propriétés Émergentes</title>
+    <link rel="stylesheet" href="styles_enhanced.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 Jeu d'Embeddings Sémantiques</h1>
+        <p class="subtitle">Exploration interactive des propriétés émergentes dans les espaces vectoriels</p>
+
+        <!-- Navigation par onglets -->
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('analogies')">🎯 Analogies</button>
+            <button class="tab-button" onclick="switchTab('clusters')">🗂️ Clusters Sémantiques</button>
+            <button class="tab-button" onclick="switchTab('visualization')">📊 Visualisation 2D</button>
+        </div>
+
+        <!-- ONGLET 1: Jeu d'analogies (original) -->
+        <div id="analogies-tab" class="tab-content active">
+            <div class="explanation">
+                <strong>🎯 Comment ça marche :</strong> Chaque mot est représenté par un vecteur de 50 dimensions.
+                L'analogie utilise l'arithmétique vectorielle : <code>vecteur(A) - vecteur(B) + vecteur(C) = vecteur(résultat)</code>
+                <br><br>
+                <strong>📊 Base de données :</strong> <span id="wordCount">1000+</span> mots avec embeddings GloVe
+            </div>
+
+            <div class="game-area">
+                <div class="analogie">
+                    <div style="position: relative;">
+                        <input type="text" id="wordA" placeholder="king" autocomplete="off">
+                        <div id="suggestionsA" class="word-suggestions" style="display: none;"></div>
+                    </div>
+                    <span>est à</span>
+                    <div style="position: relative;">
+                        <input type="text" id="wordB" placeholder="queen" autocomplete="off">
+                        <div id="suggestionsB" class="word-suggestions" style="display: none;"></div>
+                    </div>
+                    <span>ce que</span>
+                    <div style="position: relative;">
+                        <input type="text" id="wordC" placeholder="man" autocomplete="off">
+                        <div id="suggestionsC" class="word-suggestions" style="display: none;"></div>
+                    </div>
+                    <span>est à</span>
+                    <input type="text" id="result" placeholder="?" readonly style="background:#e2e8f0; font-weight: bold;">
+                </div>
+
+                <div style="text-align: center;">
+                    <button onclick="calculerAnalogie()">🧮 Calculer</button>
+                    <button onclick="motAleatoire()">🎲 Aléatoire</button>
+                    <button onclick="reset()">🔄 Reset</button>
+                </div>
+
+                <div id="loading" class="loading" style="display: none;">
+                    Calcul en cours...
+                </div>
+            </div>
+
+            <div id="resultSection" class="result">
+                <h3>🎯 Résultat de l'analogie :</h3>
+                <div id="resultText"></div>
+                <div id="similarityScore" class="similarity-score"></div>
+                <div id="closestWords" class="closest-words">
+                    <strong>🔍 Mots les plus proches :</strong>
+                    <div id="wordList" class="word-list"></div>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <strong>📈 Analogies testées</strong>
+                    <div id="totalAnalogies" style="font-size: 1.5em; color: #667eea;">0</div>
+                </div>
+                <div class="stat-card">
+                    <strong>✅ Réussites</strong>
+                    <div id="successRate" style="font-size: 1.5em; color: #48bb78;">0%</div>
+                </div>
+                <div class="stat-card">
+                    <strong>🏆 Score moyen</strong>
+                    <div id="averageScore" style="font-size: 1.5em; color: #ed8936;">0.0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ONGLET 2: Clusters sémantiques -->
+        <div id="clusters-tab" class="tab-content">
+            <div class="explanation">
+                <strong>🗂️ Découverte de clusters :</strong> Utilise K-means pour découvrir automatiquement 
+                des regroupements sémantiques émergents dans l'espace vectoriel.
+            </div>
+
+            <div class="controls">
+                <label>Nombre de clusters : <input type="number" id="numClusters" value="10" min="3" max="30"></label>
+                <button onclick="runClustering()">🔍 Découvrir les clusters</button>
+                <button onclick="showClusterStatistics()">📊 Statistiques</button>
+            </div>
+
+            <div id="clusterProgress" class="loading" style="display: none;">
+                Clustering en cours...
+            </div>
+
+            <div id="clusterResults" style="display: none;">
+                <h3>📦 Clusters découverts :</h3>
+                <div id="clusterList" class="cluster-list"></div>
+                <div id="clusterStats" class="cluster-stats"></div>
+            </div>
+        </div>
+
+        <!-- ONGLET 3: Visualisation 2D -->
+        <div id="visualization-tab" class="tab-content">
+            <div class="explanation">
+                <strong>📊 Projection UMAP :</strong> Visualisation en 2D de l'espace vectoriel à 50 dimensions.
+                Les mots proches sémantiquement apparaissent à proximité.
+            </div>
+
+            <div class="controls">
+                <button onclick="runUMAP()">🎨 Générer la projection UMAP</button>
+                <button onclick="toggleLabels()">🏷️ Afficher/Masquer labels</button>
+                <label>
+                    <input type="checkbox" id="showClustersViz" onchange="updateVisualization()"> 
+                    Colorer par clusters
+                </label>
+            </div>
+
+            <div id="umapProgress" class="loading" style="display: none;">
+                Projection UMAP en cours... (peut prendre 10-30 secondes)
+            </div>
+
+            <div id="canvasContainer" style="position: relative; margin: 20px auto;">
+                <canvas id="visualizationCanvas" width="800" height="600"></canvas>
+                <div id="tooltip" class="tooltip" style="display: none;"></div>
+            </div>
+
+            <div id="vizStats" class="viz-stats"></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/umap-js@1.4.0/lib/umap-js.min.js"></script>
+    <script src="data_embeddings.js"></script>
+    <script src="app.js"></script>
+    <script src="clusters.js"></script>
+    <script src="visualization.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
