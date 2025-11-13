@@ -28,26 +28,60 @@
             </div>
 
             <div class="game-area">
-                <div class="analogie">
-                    <div style="position: relative;">
-                        <input type="text" id="wordA" placeholder="king" autocomplete="off">
-                        <div id="suggestionsA" class="word-suggestions" style="display: none;"></div>
+                <!-- Grille 2x2 pour visualiser la translation vectorielle -->
+                <div class="analogy-grid">
+                    <!-- Ligne 1 : A → B -->
+                    <div class="grid-row">
+                        <div class="word-cell" style="position: relative;">
+                            <label class="word-label">A</label>
+                            <input type="text" id="wordA" placeholder="king" autocomplete="off">
+                            <div id="suggestionsA" class="word-suggestions" style="display: none;"></div>
+                        </div>
+                        <div class="arrow-cell">
+                            <span class="arrow-horizontal">→</span>
+                            <small class="vector-label">B - A</small>
+                        </div>
+                        <div class="word-cell" style="position: relative;">
+                            <label class="word-label">B</label>
+                            <input type="text" id="wordB" placeholder="queen" autocomplete="off">
+                            <div id="suggestionsB" class="word-suggestions" style="display: none;"></div>
+                        </div>
                     </div>
-                    <span>est à</span>
-                    <div style="position: relative;">
-                        <input type="text" id="wordB" placeholder="queen" autocomplete="off">
-                        <div id="suggestionsB" class="word-suggestions" style="display: none;"></div>
+
+                    <!-- Flèches verticales -->
+                    <div class="vertical-arrows">
+                        <div class="arrow-vertical">
+                            <span>↓</span>
+                            <small>analogie</small>
+                        </div>
+                        <div class="arrow-diagonal">
+                            <span>↘</span>
+                        </div>
+                        <div class="arrow-vertical">
+                            <span>↓</span>
+                            <small>analogie</small>
+                        </div>
                     </div>
-                    <span>ce que</span>
-                    <div style="position: relative;">
-                        <input type="text" id="wordC" placeholder="man" autocomplete="off">
-                        <div id="suggestionsC" class="word-suggestions" style="display: none;"></div>
+
+                    <!-- Ligne 2 : C → D -->
+                    <div class="grid-row">
+                        <div class="word-cell" style="position: relative;">
+                            <label class="word-label">C</label>
+                            <input type="text" id="wordC" placeholder="man" autocomplete="off">
+                            <div id="suggestionsC" class="word-suggestions" style="display: none;"></div>
+                        </div>
+                        <div class="arrow-cell">
+                            <span class="arrow-horizontal">→</span>
+                            <small class="vector-label">D - C</small>
+                        </div>
+                        <div class="word-cell result-cell">
+                            <label class="word-label">D</label>
+                            <input type="text" id="result" placeholder="?" readonly style="background:#e2e8f0; font-weight: bold;">
+                        </div>
                     </div>
-                    <span>est à</span>
-                    <input type="text" id="result" placeholder="?" readonly style="background:#e2e8f0; font-weight: bold;">
                 </div>
 
-                <div style="text-align: center;">
+                <div style="text-align: center; margin-top: 30px;">
                     <button onclick="calculerAnalogie()">🧮 Calculer</button>
                     <button onclick="motAleatoire()">🎲 Aléatoire</button>
                     <button onclick="reset()">🔄 Reset</button>
