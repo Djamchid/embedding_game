@@ -153,11 +153,16 @@ function updateVisualization() {
 }
 
 // Gestion des événements de souris
+// Flag pour s'assurer qu'on n'attache les listeners qu'une seule fois
 let canvasInteractionSetup = false;
 
 function setupCanvasInteraction() {
-    if (canvasInteractionSetup) return; // Éviter d'attacher plusieurs fois
+    if (canvasInteractionSetup) {
+        console.log('Canvas interaction déjà configurée, skip.');
+        return;
+    }
     canvasInteractionSetup = true;
+    console.log('Configuration de l\'interaction canvas...');
     
     const canvas = document.getElementById('visualizationCanvas');
     const tooltip = document.getElementById('tooltip');
