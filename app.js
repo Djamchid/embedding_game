@@ -187,14 +187,14 @@ function selectSuggestion(letter, word) {
 
 // Initialisation au chargement de la page
 document.addEventListener('DOMContentLoaded', function() {
-    generateSemanticEmbeddings();
+    // generateSemanticEmbeddings() est appelée dans main.js
     setupAutocomplete();
     updateStats();
 
     // Exemples par défaut
-    document.getElementById('wordA').value = 'roi';
-    document.getElementById('wordB').value = 'reine';
-    document.getElementById('wordC').value = 'homme';
+    document.getElementById('wordA').value = 'king';
+    document.getElementById('wordB').value = 'queen';
+    document.getElementById('wordC').value = 'man';
 });
 
 // Permettre de presser Entrée pour calculer
