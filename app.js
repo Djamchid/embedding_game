@@ -185,21 +185,12 @@ function selectSuggestion(letter, word) {
     document.getElementById(`suggestions${letter}`).style.display = 'none';
 }
 
-// Initialisation au chargement de la page
-document.addEventListener('DOMContentLoaded', function() {
-    generateSemanticEmbeddings();
-    setupAutocomplete();
-    updateStats();
-
-    // Exemples par défaut
-    document.getElementById('wordA').value = 'roi';
-    document.getElementById('wordB').value = 'reine';
-    document.getElementById('wordC').value = 'homme';
-});
-
-// Permettre de presser Entrée pour calculer
+// Permettre de presser Entrée pour calculer (seulement dans l'onglet analogies)
 document.addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
-        calculerAnalogie();
+        const activeTab = document.querySelector('.tab-content.active');
+        if (activeTab && activeTab.id === 'analogies-tab') {
+            calculerAnalogie();
+        }
     }
 });
