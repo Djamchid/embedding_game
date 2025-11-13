@@ -28,8 +28,11 @@ function switchTab(tabName) {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 Initialisation de l\'application...');
     
-    // Générer les embeddings
+    // Générer les embeddings UNE SEULE FOIS
     generateSemanticEmbeddings();
+    
+    // Vérifier le résultat
+    console.log(`📊 Vocabulaire chargé : ${vocabulary.length} mots`);
     
     // Configurer l'autocomplétion
     setupAutocomplete();
@@ -44,16 +47,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('wordA').value = 'king';
     document.getElementById('wordB').value = 'queen';
     document.getElementById('wordC').value = 'man';
-    
-    // Permettre de presser Entrée pour calculer
-    document.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            const activeTab = document.querySelector('.tab-content.active').id;
-            if (activeTab === 'analogies-tab') {
-                calculerAnalogie();
-            }
-        }
-    });
     
     console.log(`✅ Application prête ! ${vocabulary.length} mots chargés.`);
     console.log('📊 Fonctionnalités disponibles:');
