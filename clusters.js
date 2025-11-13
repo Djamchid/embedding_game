@@ -2,6 +2,19 @@
 
 let clusterData = null;
 
+// Initialiser les limites du contrôle de clusters
+function initClusterControl() {
+    const minClusters = 2;
+    const maxClusters = Math.floor(vocabulary.length / 5);
+    const numClustersInput = document.getElementById('numClusters');
+
+    numClustersInput.min = minClusters;
+    numClustersInput.max = maxClusters;
+    numClustersInput.value = Math.min(10, maxClusters); // Valeur par défaut de 10 ou le max si moins
+
+    console.log(`Contrôle de clusters initialisé: ${minClusters} à ${maxClusters} clusters (${vocabulary.length} mots)`);
+}
+
 // Initialiser des centroides aléatoires
 function initializeCentroids(vectors, k) {
     const centroids = [];
@@ -159,12 +172,14 @@ function findRepresentativeWords(clusterWords, clusterIdx, numWords = 5) {
 // Fonction principale pour exécuter le clustering
 function runClustering() {
     const numClusters = parseInt(document.getElementById('numClusters').value);
-    
-    if (numClusters < 3 || numClusters > 30) {
-        alert('Veuillez choisir entre 3 et 30 clusters');
+    const minClusters = 2;
+    const maxClusters = Math.floor(vocabulary.length / 5);
+
+    if (numClusters < minClusters || numClusters > maxClusters) {
+        alert(`Veuillez choisir entre ${minClusters} et ${maxClusters} clusters (max = nombre de mots / 5)`);
         return;
     }
-    
+
     document.getElementById('clusterProgress').style.display = 'block';
     document.getElementById('clusterResults').style.display = 'none';
     
