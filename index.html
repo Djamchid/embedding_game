@@ -29,55 +29,61 @@
 
             <div class="game-area">
                 <!-- Grille 2x2 pour visualiser la translation vectorielle -->
-                <div class="analogy-grid">
-                    <!-- Ligne 1 : A → B -->
-                    <div class="grid-row">
-                        <div class="word-cell" style="position: relative;">
-                            <label class="word-label">A</label>
+                <div class="analogy-grid-2x2">
+                    <!-- Ligne 1 : A et B -->
+                    <div class="grid-cell top-left">
+                        <label class="word-label">A</label>
+                        <div style="position: relative;">
                             <input type="text" id="wordA" placeholder="king" autocomplete="off">
                             <div id="suggestionsA" class="word-suggestions" style="display: none;"></div>
                         </div>
-                        <div class="arrow-cell">
-                            <span class="arrow-horizontal">→</span>
-                            <small class="vector-label">B - A</small>
-                        </div>
-                        <div class="word-cell" style="position: relative;">
-                            <label class="word-label">B</label>
+                    </div>
+
+                    <div class="horizontal-arrow top">
+                        <span>→</span>
+                        <small>B - A</small>
+                    </div>
+
+                    <div class="grid-cell top-right">
+                        <label class="word-label">B</label>
+                        <div style="position: relative;">
                             <input type="text" id="wordB" placeholder="queen" autocomplete="off">
                             <div id="suggestionsB" class="word-suggestions" style="display: none;"></div>
                         </div>
                     </div>
 
                     <!-- Flèches verticales -->
-                    <div class="vertical-arrows">
-                        <div class="arrow-vertical">
-                            <span>↓</span>
-                            <small>analogie</small>
-                        </div>
-                        <div class="arrow-diagonal">
-                            <span>↘</span>
-                        </div>
-                        <div class="arrow-vertical">
-                            <span>↓</span>
-                            <small>analogie</small>
-                        </div>
+                    <div class="vertical-arrow left">
+                        <span>↓</span>
+                        <small>même cluster</small>
                     </div>
 
-                    <!-- Ligne 2 : C → D -->
-                    <div class="grid-row">
-                        <div class="word-cell" style="position: relative;">
-                            <label class="word-label">C</label>
+                    <div class="center-space">
+                        <span class="diagonal-arrow">↘</span>
+                    </div>
+
+                    <div class="vertical-arrow right">
+                        <span>↓</span>
+                        <small>même cluster</small>
+                    </div>
+
+                    <!-- Ligne 2 : C et D -->
+                    <div class="grid-cell bottom-left">
+                        <label class="word-label">C</label>
+                        <div style="position: relative;">
                             <input type="text" id="wordC" placeholder="man" autocomplete="off">
                             <div id="suggestionsC" class="word-suggestions" style="display: none;"></div>
                         </div>
-                        <div class="arrow-cell">
-                            <span class="arrow-horizontal">→</span>
-                            <small class="vector-label">D - C</small>
-                        </div>
-                        <div class="word-cell result-cell">
-                            <label class="word-label">D</label>
-                            <input type="text" id="result" placeholder="?" readonly style="background:#e2e8f0; font-weight: bold;">
-                        </div>
+                    </div>
+
+                    <div class="horizontal-arrow bottom">
+                        <span>→</span>
+                        <small>D - C</small>
+                    </div>
+
+                    <div class="grid-cell bottom-right result-cell">
+                        <label class="word-label">D</label>
+                        <input type="text" id="result" placeholder="?" readonly>
                     </div>
                 </div>
 
