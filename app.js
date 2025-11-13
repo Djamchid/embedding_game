@@ -113,7 +113,8 @@ function updateStats() {
     document.getElementById('averageScore').textContent = averageScore;
 }
 
-function motAleatoire() {
+// Fonction fallback : sélection aléatoire simple
+function motAleatoireSimple() {
     // Tirer le premier mot au hasard
     const randomIndexA = Math.floor(Math.random() * vocabulary.length);
     const wordA = vocabulary[randomIndexA];
@@ -133,9 +134,62 @@ function motAleatoire() {
     const randomCloseIndex = Math.floor(Math.random() * Math.min(20, closeWords.length));
     const wordC = closeWords[randomCloseIndex].word;
 
-    document.getElementById('wordA').value = wordA;
-    document.getElementById('wordB').value = wordB;
-    document.getElementById('wordC').value = wordC;
+    return { wordA, wordB, wordC };
+}
+
+// Nouvelle fonction : sélection basée sur les clusters
+function motAleatoireClusters() {
+    // Vérifier si les clusters sont disponibles
+    if (!clusterData || !clusterData.clusters || clusterData.clusters.length < 2) {
+        console.log('⚠️ Clusters non disponibles, utilisation de l\'algorithme simple');
+        return motAleatoireSimple();
+    }
+
+    // Filtrer les clusters ayant au moins 3 mots
+    const clustersValides = clusterData.clusters.filter(c => c.length >= 3);
+
+    if (clustersValides.length < 2) {
+        console.log('⚠️ Pas assez de clusters valides (besoin de 2 avec ≥3 mots), utilisation de l\'algorithme simple');
+        return motAleatoireSimple();
+    }
+
+    // Sélectionner 2 clusters différents
+    const idx1 = Math.floor(Math.random() * clustersValides.length);
+    let idx2 = Math.floor(Math.random() * clustersValides.length);
+    while (idx2 === idx1) {
+        idx2 = Math.floor(Math.random() * clustersValides.length);
+    }
+
+    const cluster1 = clustersValides[idx1];
+    const cluster2 = clustersValides[idx2];
+
+    // Sélectionner A du cluster 1
+    const indexA = Math.floor(Math.random() * cluster1.length);
+    const wordA = cluster1[indexA];
+
+    // Sélectionner C du cluster 1 (différent de A)
+    let indexC = Math.floor(Math.random() * cluster1.length);
+    while (indexC === indexA) {
+        indexC = Math.floor(Math.random() * cluster1.length);
+    }
+    const wordC = cluster1[indexC];
+
+    // Sélectionner B du cluster 2
+    const indexB = Math.floor(Math.random() * cluster2.length);
+    const wordB = cluster2[indexB];
+
+    console.log(`🎯 Analogie cluster-based : A="${wordA}" et C="${wordC}" (cluster ${idx1+1}), B="${wordB}" (cluster ${idx2+1})`);
+
+    return { wordA, wordB, wordC };
+}
+
+// Fonction principale : essaie d'utiliser les clusters, sinon fallback
+function motAleatoire() {
+    const result = motAleatoireClusters();
+
+    document.getElementById('wordA').value = result.wordA;
+    document.getElementById('wordB').value = result.wordB;
+    document.getElementById('wordC').value = result.wordC;
     document.getElementById('result').value = '';
     document.getElementById('resultSection').style.display = 'none';
 }
