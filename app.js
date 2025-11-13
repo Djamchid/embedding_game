@@ -99,13 +99,15 @@ function calculerAnalogie() {
     document.getElementById('resultSection').style.display = 'none';
 
     setTimeout(() => {
-        // Calcul vectoriel : A - B + C
+        // Calcul vectoriel : C + B - A
+        // "A est à B" = transformation (B - A)
+        // "C est à D" = appliquer la même transformation : D = C + (B - A)
         const vecA = embeddings[wordA];
         const vecB = embeddings[wordB];
         const vecC = embeddings[wordC];
 
-        const diff = vectorSubtract(vecA, vecB);
-        const result = vectorAdd(diff, vecC);
+        const diff = vectorSubtract(vecB, vecA);  // B - A
+        const result = vectorAdd(vecC, diff);      // C + (B - A)
 
         // Trouver le cluster de B
         const clusterB = findWordCluster(wordB);
