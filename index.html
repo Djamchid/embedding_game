@@ -92,7 +92,7 @@
             </div>
 
             <div class="controls">
-                <label>Nombre de clusters : <input type="number" id="numClusters" value="10" min="3" max="30"></label>
+                <label>Nombre de clusters (2 à nb_mots/5) : <input type="number" id="numClusters" value="10" min="2" max="200"></label>
                 <button onclick="runClustering()">🔍 Découvrir les clusters</button>
                 <button onclick="showClusterStatistics()">📊 Statistiques</button>
             </div>
@@ -118,8 +118,9 @@
             <div class="controls">
                 <button onclick="runUMAP()">🎨 Générer la projection UMAP</button>
                 <button onclick="toggleLabels()">🏷️ Afficher/Masquer labels</button>
+                <button onclick="resetZoom()">🔍 Réinitialiser le zoom</button>
                 <label>
-                    <input type="checkbox" id="showClustersViz" onchange="updateVisualization()"> 
+                    <input type="checkbox" id="showClustersViz" onchange="updateVisualization()">
                     Colorer par clusters
                 </label>
             </div>

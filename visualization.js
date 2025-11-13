@@ -4,6 +4,14 @@ let umapProjection = null;
 let showLabels = false;
 let hoveredWord = null;
 
+// Variables pour le zoom et le pan
+let zoomLevel = 1;
+let offsetX = 0;
+let offsetY = 0;
+let isDragging = false;
+let lastMouseX = 0;
+let lastMouseY = 0;
+
 // Exécuter la projection UMAP
 async function runUMAP() {
     document.getElementById('umapProgress').style.display = 'block';
@@ -37,16 +45,21 @@ async function runUMAP() {
         });
         
         console.log('Projection UMAP terminée !');
-        
+
         // Normaliser les coordonnées pour le canvas
         umapProjection = normalizeProjection(embedding, vocabulary);
-        
+
+        // Réinitialiser le zoom et le pan
+        zoomLevel = 1;
+        offsetX = 0;
+        offsetY = 0;
+
         // Dessiner la visualisation
         drawVisualization();
-        
+
         // Afficher les stats
         displayVizStats();
-        
+
         document.getElementById('umapProgress').style.display = 'none';
         
     } catch (error) {
@@ -87,17 +100,24 @@ function normalizeProjection(embedding, words) {
 // Dessiner la visualisation
 function drawVisualization() {
     if (!umapProjection) return;
-    
+
     const canvas = document.getElementById('visualizationCanvas');
     const ctx = canvas.getContext('2d');
-    
+
     // Effacer le canvas
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
+
+    // Sauvegarder l'état du contexte
+    ctx.save();
+
+    // Appliquer les transformations de zoom et pan
+    ctx.translate(offsetX, offsetY);
+    ctx.scale(zoomLevel, zoomLevel);
+
     // Afficher par clusters ou non
     const showClusters = document.getElementById('showClustersViz').checked;
-    
+
     // Dessiner les points
     umapProjection.forEach((point, idx) => {
         // Déterminer la couleur
@@ -106,32 +126,32 @@ function drawVisualization() {
             const clusterIdx = clusterData.assignments[idx];
             color = getClusterColor(clusterIdx);
         }
-        
+
         // Point en surbrillance si survolé
         const isHovered = hoveredWord === point.word;
         const radius = isHovered ? 6 : 3;
-        
+
         ctx.beginPath();
         ctx.arc(point.x, point.y, radius, 0, 2 * Math.PI);
         ctx.fillStyle = color;
         ctx.fill();
-        
+
         if (isHovered) {
             ctx.strokeStyle = '#000';
             ctx.lineWidth = 2;
             ctx.stroke();
         }
     });
-    
+
     // Afficher les labels si demandé
     if (showLabels) {
         ctx.font = '11px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
-        
+
         // N'afficher qu'un échantillon pour éviter la surcharge
         const step = Math.max(1, Math.floor(umapProjection.length / 100));
-        
+
         umapProjection.forEach((point, idx) => {
             if (idx % step === 0 || hoveredWord === point.word) {
                 ctx.fillStyle = '#000';
@@ -139,6 +159,9 @@ function drawVisualization() {
             }
         });
     }
+
+    // Restaurer l'état du contexte
+    ctx.restore();
 }
 
 // Basculer l'affichage des labels
@@ -147,9 +170,25 @@ function toggleLabels() {
     drawVisualization();
 }
 
+// Réinitialiser le zoom et le pan
+function resetZoom() {
+    zoomLevel = 1;
+    offsetX = 0;
+    offsetY = 0;
+    drawVisualization();
+}
+
 // Mettre à jour la visualisation (changement de clusters)
 function updateVisualization() {
     drawVisualization();
+}
+
+// Convertir les coordonnées de la souris en coordonnées du canvas (tenant compte du zoom/pan)
+function screenToCanvas(screenX, screenY) {
+    return {
+        x: (screenX - offsetX) / zoomLevel,
+        y: (screenY - offsetY) / zoomLevel
+    };
 }
 
 // Gestion des événements de souris
@@ -163,38 +202,95 @@ function setupCanvasInteraction() {
     }
     canvasInteractionSetup = true;
     console.log('Configuration de l\'interaction canvas...');
-    
+
     const canvas = document.getElementById('visualizationCanvas');
     const tooltip = document.getElementById('tooltip');
-    
-    canvas.addEventListener('mousemove', (e) => {
+
+    // Gestion du zoom avec la molette
+    canvas.addEventListener('wheel', (e) => {
+        e.preventDefault();
+
         if (!umapProjection) return;
-        
+
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
-        
+
+        // Calculer le nouveau niveau de zoom
+        const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+        const newZoomLevel = Math.max(0.1, Math.min(10, zoomLevel * zoomFactor));
+
+        // Ajuster l'offset pour zoomer vers la position de la souris
+        offsetX = mouseX - (mouseX - offsetX) * (newZoomLevel / zoomLevel);
+        offsetY = mouseY - (mouseY - offsetY) * (newZoomLevel / zoomLevel);
+
+        zoomLevel = newZoomLevel;
+
+        drawVisualization();
+    }, { passive: false });
+
+    // Gestion du pan avec glisser-déposer
+    canvas.addEventListener('mousedown', (e) => {
+        if (!umapProjection) return;
+
+        isDragging = true;
+        lastMouseX = e.clientX;
+        lastMouseY = e.clientY;
+        canvas.style.cursor = 'grabbing';
+    });
+
+    canvas.addEventListener('mouseup', () => {
+        isDragging = false;
+        canvas.style.cursor = 'grab';
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+        if (!umapProjection) return;
+
+        // Gérer le pan
+        if (isDragging) {
+            const deltaX = e.clientX - lastMouseX;
+            const deltaY = e.clientY - lastMouseY;
+
+            offsetX += deltaX;
+            offsetY += deltaY;
+
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+
+            drawVisualization();
+            return;
+        }
+
+        // Gérer le survol des points
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        // Convertir les coordonnées en tenant compte du zoom/pan
+        const canvasCoords = screenToCanvas(mouseX, mouseY);
+
         // Trouver le point le plus proche
         let closestPoint = null;
-        let minDist = 15; // Rayon de détection
-        
+        let minDist = 15 / zoomLevel; // Rayon de détection ajusté au zoom
+
         for (const point of umapProjection) {
-            const dist = Math.sqrt((point.x - mouseX) ** 2 + (point.y - mouseY) ** 2);
+            const dist = Math.sqrt((point.x - canvasCoords.x) ** 2 + (point.y - canvasCoords.y) ** 2);
             if (dist < minDist) {
                 minDist = dist;
                 closestPoint = point;
             }
         }
-        
+
         if (closestPoint) {
             hoveredWord = closestPoint.word;
-            
+
             // Afficher le tooltip
             tooltip.textContent = closestPoint.word;
             tooltip.style.display = 'block';
             tooltip.style.left = (e.clientX + 10) + 'px';
             tooltip.style.top = (e.clientY - 30) + 'px';
-            
+
             drawVisualization();
         } else {
             hoveredWord = null;
@@ -202,18 +298,26 @@ function setupCanvasInteraction() {
             drawVisualization();
         }
     });
-    
+
     canvas.addEventListener('mouseleave', () => {
+        isDragging = false;
         hoveredWord = null;
         tooltip.style.display = 'none';
+        canvas.style.cursor = 'default';
         drawVisualization();
     });
-    
+
+    canvas.addEventListener('mouseenter', () => {
+        if (umapProjection) {
+            canvas.style.cursor = 'grab';
+        }
+    });
+
     canvas.addEventListener('click', (e) => {
-        if (hoveredWord) {
+        if (hoveredWord && !isDragging) {
             // Trouver les mots similaires
             const similars = findClosestWords(embeddings[hoveredWord], [hoveredWord], 10);
-            
+
             // Afficher dans une alerte (ou on pourrait créer un panneau dédié)
             const similarWords = similars.map(s => `${s.word} (${(s.similarity * 100).toFixed(1)}%)`).join('\n');
             alert(`Mots proches de "${hoveredWord}" :\n\n${similarWords}`);

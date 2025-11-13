@@ -34,6 +34,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Vérifier le résultat
     console.log(`📊 Vocabulaire chargé : ${vocabulary.length} mots`);
 
+    // Initialiser les limites du contrôle de clusters
+    initClusterControl();
+
     // Configurer l'autocomplétion
     setupAutocomplete();
 
