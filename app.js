@@ -45,6 +45,39 @@ function findClosestWords(targetVector, excludeWords, topN) {
     return similarities.slice(0, topN);
 }
 
+// Trouver les mots les plus proches dans une liste restreinte
+function findClosestWordsInList(targetVector, wordList, excludeWords, topN) {
+    excludeWords = excludeWords || [];
+    topN = topN || 10;
+
+    const similarities = [];
+
+    for (const word of wordList) {
+        if (!excludeWords.includes(word)) {
+            const similarity = cosineSimilarity(targetVector, embeddings[word]);
+            similarities.push({word, similarity});
+        }
+    }
+
+    similarities.sort((a, b) => b.similarity - a.similarity);
+    return similarities.slice(0, topN);
+}
+
+// Trouver le cluster d'un mot donné
+function findWordCluster(word) {
+    if (!clusterData || !clusterData.clusters) {
+        return null;
+    }
+
+    for (let i = 0; i < clusterData.clusters.length; i++) {
+        if (clusterData.clusters[i].includes(word)) {
+            return { index: i, words: clusterData.clusters[i] };
+        }
+    }
+
+    return null;
+}
+
 // Fonction principale pour calculer l'analogie
 function calculerAnalogie() {
     const wordA = document.getElementById('wordA').value.toLowerCase().trim();
@@ -74,15 +107,36 @@ function calculerAnalogie() {
         const diff = vectorSubtract(vecA, vecB);
         const result = vectorAdd(diff, vecC);
 
-        // Trouver les mots les plus proches
-        const closest = findClosestWords(result, [wordA, wordB, wordC], 10);
+        // Trouver le cluster de B
+        const clusterB = findWordCluster(wordB);
+        let closest;
+        let searchInfo = '';
+
+        if (clusterB && clusterB.words.length > 1) {
+            // Chercher D dans le cluster de B
+            closest = findClosestWordsInList(result, clusterB.words, [wordA, wordB, wordC], 10);
+
+            // Si pas de résultats dans le cluster (tous exclus), fallback
+            if (closest.length === 0) {
+                closest = findClosestWords(result, [wordA, wordB, wordC], 10);
+                searchInfo = `<br><small style="color: #718096;">⚠️ Aucun mot disponible dans le cluster de "${wordB}", recherche globale</small>`;
+            } else {
+                searchInfo = `<br><small style="color: #48bb78;">🎯 Résultat trouvé dans le cluster ${clusterB.index + 1} (même cluster que "${wordB}")</small>`;
+            }
+        } else {
+            // Pas de clusters disponibles, recherche globale
+            closest = findClosestWords(result, [wordA, wordB, wordC], 10);
+            searchInfo = `<br><small style="color: #718096;">💡 Astuce : Exécutez le clustering d'abord pour des analogies plus cohérentes</small>`;
+        }
+
         const bestMatch = closest[0];
 
         // Afficher le résultat
         document.getElementById('result').value = bestMatch.word;
         document.getElementById('resultText').innerHTML =
             `<strong style="font-size: 1.5em; color: #667eea;">${bestMatch.word}</strong>
-             <br><br><em>"${wordA} est à ${wordB} ce que ${wordC} est à <strong>${bestMatch.word}</strong>"</em>`;
+             <br><br><em>"${wordA} est à ${wordB} ce que ${wordC} est à <strong>${bestMatch.word}</strong>"</em>
+             ${searchInfo}`;
 
         document.getElementById('similarityScore').innerHTML =
             `Score de similarité : <strong>${(bestMatch.similarity * 100).toFixed(1)}%</strong>`;
