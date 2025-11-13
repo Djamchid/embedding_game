@@ -27,27 +27,27 @@ function switchTab(tabName) {
 // Initialisation au chargement de la page
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 Initialisation de l\'application...');
-    
+
     // Générer les embeddings UNE SEULE FOIS
     generateSemanticEmbeddings();
-    
+
     // Vérifier le résultat
     console.log(`📊 Vocabulaire chargé : ${vocabulary.length} mots`);
-    
+
     // Configurer l'autocomplétion
     setupAutocomplete();
-    
+
     // Mettre à jour le compteur de mots
     document.getElementById('wordCount').textContent = vocabulary.length;
-    
+
     // Mettre à jour les stats
     updateStats();
-    
+
     // Exemples par défaut
     document.getElementById('wordA').value = 'king';
     document.getElementById('wordB').value = 'queen';
     document.getElementById('wordC').value = 'man';
-    
+
     console.log(`✅ Application prête ! ${vocabulary.length} mots chargés.`);
     console.log('📊 Fonctionnalités disponibles:');
     console.log('   - Jeu d\'analogies vectorielles');

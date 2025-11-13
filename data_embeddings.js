@@ -4,6 +4,10 @@ var vocabulary = [];
 
 // Générer les embeddings depuis GloVe avec organisation par catégories
 function generateSemanticEmbeddings() {
+    // Réinitialiser pour éviter les duplications si appelé plusieurs fois
+    embeddings = {};
+    vocabulary = [];
+
     const words = {
 
         // Pronouns and Articles
@@ -4105,11 +4109,10 @@ function findAnalogy(wordA, wordB, wordC) {
     return { word: bestWord, similarity: bestSim };
 }
 
-// Initialiser au chargement de la page
-if (typeof window !== 'undefined') {
-    window.addEventListener('load', generateSemanticEmbeddings);
-} else if (typeof module !== 'undefined' && module.exports) {
+// Export pour Node.js si nécessaire
+if (typeof module !== 'undefined' && module.exports) {
     // Pour Node.js
     generateSemanticEmbeddings();
     module.exports = { embeddings, vocabulary, cosineSimilarity, findNearestWords, findAnalogy };
 }
+// Note: L'initialisation dans le navigateur est gérée par main.js
