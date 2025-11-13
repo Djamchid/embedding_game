@@ -96,8 +96,8 @@ walked - walk + run = ran
 Chaque mot = vecteur de 50 nombres. Les mots similaires ont des vecteurs proches.
 
 ### 🎯 Analogie
-`vecteur(A) - vecteur(B) + vecteur(C) ≈ vecteur(D)`
-La relation A→B est similaire à la relation C→D
+`vecteur(C) + vecteur(B) - vecteur(A) ≈ vecteur(D)`
+La relation A→B est appliquée à C pour trouver D
 
 ### 🗂️ K-means
 Algorithme qui groupe automatiquement les mots par similarité vectorielle
